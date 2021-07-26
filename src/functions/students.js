@@ -1,12 +1,14 @@
 const users = require('./users')
 const AlunosController = require('../database/Alunos')
 
+//Coloca todos os nomes do array com primeira letra maiúscula
 async function uppercaseFirst(nome) {
     return await nome.split(' ').map((name) => {
         return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
     })
 }
 
+//Divide o nome de forma correta em dois campos
 async function balanceName(name) {
     const nameSplit = await uppercaseFirst(name)
 
@@ -24,11 +26,13 @@ async function balanceName(name) {
     return finalName
 }
 
+//Obtém todos os estudantes do Microsoft Graph
 async function getStudents(token) {
     const students = await users.getUsers(token)
     return await students.filter((student) => student.jobTitle === 'Estudante')
 }
 
+//Cria novos estudantes
 async function postStudents(token, data) {
     //Criando usuário
     const splittedName = await balanceName(data.nome)
@@ -79,7 +83,7 @@ async function postStudents(token, data) {
         senha: process.env.DEFAULT_PASSWORD,
         email: `${data.matricula}@${process.env.DOMAIN}`,
         created: Date.now(),
-        updated: Date.now()
+        updated: Date.now(),
     }
 
     const distributed = await AlunosController.pushStudentsToDistribution(alunoToAdd)
@@ -87,6 +91,7 @@ async function postStudents(token, data) {
     return students
 }
 
+//Função ponto de partida para a criação de alunos que estão sem conta
 async function createMissingStudents(token) {
     //STUDENTS
     const studentsNoEmail = await AlunosController.getStudentsNoEmail()

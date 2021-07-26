@@ -10,6 +10,7 @@ const DistributionSchema = new Schema({
     email: {type: String, required: true, unique: true },
     created: { type: Date, default: null },
     updated: { type: Date, default: null },
+    logged: { type: Boolean, default: null },
 });
 
 module.exports = mongoose.model('Distribution', DistributionSchema, 'distributions')
