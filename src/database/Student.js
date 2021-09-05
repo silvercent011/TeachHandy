@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Aluno = require('../models/Aluno')
-const Distribution = require('../models/Distribution')
+const Distribution = require('../models/DistributionStudent')
 
 async function getStudents() {
     const students = await Aluno.find({})

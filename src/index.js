@@ -1,6 +1,7 @@
 //Require Functions
 const auth = require('./auth')
 const students = require('./functions/students')
+const faculties = require('./functions/faculties')
 const mongoose = require("mongoose")
 
 //Load credentials from dotenv
@@ -15,8 +16,11 @@ const msalConfig = {
 async function main(){
     const token = await auth.requireToken(msalConfig).then((data)=> data.accessToken)
 
-    const Students = await students.createMissingStudents(token)
-    console.log(Students)
+    // const Students = await students.createMissingStudents(token)
+    // console.log(Students)
+    
+    const Faculty = await faculties.createMissingFaculty(token)
+    console.log(Faculty)
 
 }
 

@@ -32,4 +32,11 @@ Um aplicativo do tipo daemon que utiliza o MongoDB e Microsoft Graph para automa
 <mark>Organization</mark>,
 <mark>Teams</mark>,
 <mark>User</mark>,
+<mark>Group</mark>,
+<mark>GroupMember</mark>,
 * Marque o botão "Adicionar permissões".
+
+# Informações solicitadas de ambiente
+* Para preencher o restante das informações requeridas no <mark>.env.example</mark> pode ser utilizado o Microsoft Graph Explorer.
+
+https://developer.microsoft.com/en-us/graph/graph-explorer

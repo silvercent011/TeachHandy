@@ -1,30 +1,7 @@
-const users = require('./users')
-const AlunosController = require('../database/Alunos')
+const users = require('./handFunctions')
+const AlunosController = require('../database/Student')
 
-//Coloca todos os nomes do array com primeira letra maiúscula
-async function uppercaseFirst(nome) {
-    return await nome.split(' ').map((name) => {
-        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
-    })
-}
-
-//Divide o nome de forma correta em dois campos
-async function balanceName(name) {
-    const nameSplit = await uppercaseFirst(name)
-
-    let finalName = {
-        name: null,
-        surname: null
-    }
-    let middle = await Math.floor(nameSplit.length/2)
-    let nameArray = await nameSplit.slice(0, middle)
-    let surnameArray = await nameSplit.slice(middle, nameSplit.length)
-
-    finalName.name = await nameArray.join(' ')
-    finalName.surname = await surnameArray.join(' ')
-
-    return finalName
-}
+const shared = require('./shared')
 
 //Obtém todos os estudantes do Microsoft Graph
 async function getStudents(token) {
@@ -35,8 +12,8 @@ async function getStudents(token) {
 //Cria novos estudantes
 async function postStudents(token, data) {
     //Criando usuário
-    const splittedName = await balanceName(data.nome)
-    const dispName = await uppercaseFirst(data.nome)
+    const splittedName = await shared.balanceName(data.nome)
+    const dispName = await shared.uppercaseFirst(data.nome)
     const studentData = {
         accountEnabled: true,
         displayName: dispName.join(' '),
@@ -82,6 +59,7 @@ async function postStudents(token, data) {
         nome: data.nome,
         senha: process.env.DEFAULT_PASSWORD,
         email: `${data.matricula}@${process.env.DOMAIN}`,
+        jobtitle: studentData.jobTitle,
         created: Date.now(),
         updated: Date.now(),
     }
