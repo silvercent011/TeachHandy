@@ -16,12 +16,15 @@ const msalConfig = {
 async function main(){
     const token = await auth.requireToken(msalConfig).then((data)=> data.accessToken)
 
-    // const Students = await students.createMissingStudents(token)
-    // console.log(Students)
-    
+    console.log("Starting Students")
+    const Students = await students.createMissingStudents(token)
+    console.log(Students)
+    console.log("Starting Faculty")
     const Faculty = await faculties.createMissingFaculty(token)
     console.log(Faculty)
+    console.log("END")
 
+    process.exit()
 }
 
 //MongoDB Connection

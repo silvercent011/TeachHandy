@@ -74,8 +74,13 @@ async function createMissingStudents(token) {
     //STUDENTS
     const studentsNoEmail = await AlunosController.getStudentsNoEmail()
     const studentsPost = await Promise.all(studentsNoEmail.map(async (student) => {
-        const studentToPost = await postStudents(token, student)
-        return studentToPost
+        // Verifica se aluno está habilitado antes de criar as contas
+        if (student.enabled === true) {
+            const studentToPost = await postStudents(token, student)
+            return studentToPost
+        } else {
+            return null
+        }
     }))
 
     return studentsPost

@@ -44,7 +44,7 @@ async function postStaffUser(token, data) {
             ],
             "removeLicenses": []
     }
-    const licences = await users.postUsers(token,licence, `/${staff.userPrincipalName}/assignLicense`)
+    await users.postUsers(token,licence, `/${staff.userPrincipalName}/assignLicense`)
     
     //Atualizando banco de dados original
     const staffToUpdate = {
@@ -52,16 +52,16 @@ async function postStaffUser(token, data) {
         email: staff.userPrincipalName,
     }
 
-    const updated = await StaffController.updateTeachersEmail(staffToUpdate)
+    await StaffController.updateTeachersEmail(staffToUpdate)
 
     //Obtendo objetos para adicionar usuários a grupos
     const userObjects = {"@odata.id":staff["@odata.id"]}
 
     //Adicionando a grupo de organização
-    // const orgGroup = await users.postGroups(token, userObjects, `/${process.env.FACULTY_GROUP_ID}/members/$ref`)
+    await users.postGroups(token, userObjects, `/${process.env.FACULTY_GROUP_ID}/members/$ref`)
     //ADICIONAR APENAS SE HOUVER SSO NA ORGANIZAÇÃO
     //Adicionando a grupo de SSO
-    // const ssoGroup = await users.postGroups(token, userObjects, `/${process.env.SSO_FACULTY_GROUP}/members/$ref`)
+    await users.postGroups(token, userObjects, `/${process.env.SSO_FACULTY_GROUP}/members/$ref`)
 
     //Adicionando usuario na collection de distribuição
     const staffToAdd = {
@@ -75,7 +75,7 @@ async function postStaffUser(token, data) {
         updated: Date.now(),
     }
 
-    const distributed = await StaffController.pushTeachersToDistribution(staffToAdd)
+    await StaffController.pushTeachersToDistribution(staffToAdd)
     
     return staff
 }
