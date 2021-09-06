@@ -53,7 +53,7 @@ async function postStudents(token, data) {
     await AlunosController.updateStudentsEmail(alunoToUpdate)
 
     //Obtendo objetos para adicionar usuários a grupos
-    const userObjects = {"@odata.id":staff["@odata.id"]}
+    const userObjects = {"@odata.id":students["@odata.id"]}
 
     //Adicionando a grupo de organização
     await users.postGroups(token, userObjects, `/${process.env.STUDENT_GROUP_ID}/members/$ref`)
@@ -74,7 +74,7 @@ async function postStudents(token, data) {
         updated: Date.now(),
     }
 
-    const distributed = await AlunosController.pushStudentsToDistribution(alunoToAdd)
+    await AlunosController.pushStudentsToDistribution(alunoToAdd)
     
     return students
 }
