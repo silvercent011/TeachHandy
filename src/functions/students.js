@@ -42,7 +42,7 @@ async function postStudents(token, data) {
             ],
             "removeLicenses": []
     }
-    const licences = await users.postUsers(token,licence, `/${students.userPrincipalName}/assignLicense`)
+    await users.postUsers(token,licence, `/${students.userPrincipalName}/assignLicense`)
     
     //Atualizando banco de dados original
     const alunoToUpdate = {
@@ -50,7 +50,17 @@ async function postStudents(token, data) {
         email: `${data.matricula}@${process.env.DOMAIN}`,
     }
 
-    const updated = await AlunosController.updateStudentsEmail(alunoToUpdate)
+    await AlunosController.updateStudentsEmail(alunoToUpdate)
+
+    //Obtendo objetos para adicionar usuários a grupos
+    const userObjects = {"@odata.id":staff["@odata.id"]}
+
+    //Adicionando a grupo de organização
+    await users.postGroups(token, userObjects, `/${process.env.STUDENT_GROUP_ID}/members/$ref`)
+    //ADICIONAR APENAS SE HOUVER SSO NA ORGANIZAÇÃO
+    //Adicionando a grupo de SSO
+    await users.postGroups(token, userObjects, `/${process.env.SSO_STUDENT_GROUP}/members/$ref`)
+    
 
     //Adicionando aluno na collection de distribuição
     const alunoToAdd = {
