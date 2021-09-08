@@ -11,7 +11,7 @@ const DistributionSchema = new Schema({
     jobtitle: {type: String, required: true},
     created: { type: Date, default: null },
     updated: { type: Date, default: null },
-    logged: { type: Boolean, default: null },
+    sharedTimes: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('DistributionStudent', DistributionSchema, 'distributions')
