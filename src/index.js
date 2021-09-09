@@ -16,12 +16,12 @@ const msalConfig = {
 async function main() {
     const token = await auth.requireToken(msalConfig).then((data) => data.accessToken)
 
-    if (process.env.STUDENTS_START == true) {
+    if (process.env.STUDENTS_START == 'true') {
         console.log("Starting Students")
         const Students = await students.createMissingStudents(token)
         console.log(Students)
     }
-    if (process.env.FACULTY_START == true) {
+    if (process.env.FACULTY_START == 'true') {
         console.log("Starting Faculty")
         const Faculty = await faculties.createMissingFaculty(token)
         console.log(Faculty)
