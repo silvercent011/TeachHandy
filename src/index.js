@@ -13,20 +13,24 @@ const msalConfig = {
 }
 
 //main function
-async function main(){
-    const token = await auth.requireToken(msalConfig).then((data)=> data.accessToken)
+async function main() {
+    const token = await auth.requireToken(msalConfig).then((data) => data.accessToken)
 
-    console.log("Starting Students")
-    const Students = await students.createMissingStudents(token)
-    console.log(Students)
-    console.log("Starting Faculty")
-    const Faculty = await faculties.createMissingFaculty(token)
-    console.log(Faculty)
+    if (process.env.STUDENTS_START == true) {
+        console.log("Starting Students")
+        const Students = await students.createMissingStudents(token)
+        console.log(Students)
+    }
+    if (process.env.FACULTY_START == true) {
+        console.log("Starting Faculty")
+        const Faculty = await faculties.createMissingFaculty(token)
+        console.log(Faculty)
+    }
     console.log("END")
 
     process.exit()
 }
 
 //MongoDB Connection
-mongoose.connect(process.env.MONGO_STRING, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.MONGO_STRING, { useNewUrlParser: true, useUnifiedTopology: true })
 main()
