@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const DistributionSchema = new Schema({
     _id: { type: String, required: true, unique: true },
     nome: { type: String, required: true },
-    cpf: { type: String, required: true, unique: true },
+    cpf: { type: String, required: true},
     senha: { type: String, required: true},
     email: {type: String, required: true, unique: true },
     jobtitle: {type: String, required: true},
