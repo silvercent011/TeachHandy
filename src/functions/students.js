@@ -53,7 +53,8 @@ async function postStudents(token, data) {
     await AlunosController.updateStudentsEmail(alunoToUpdate)
 
     //Obtendo objetos para adicionar usuários a grupos
-    const userObjects = {"@odata.id":students["@odata.id"]}
+    // const userObjects = {"@odata.id":students["@odata.id"]}
+    const userObjects = {"@odata.id":`https://graph.microsoft.com/v1.0/directoryObjects/${students.id}`}
 
     //Adicionando a grupo de organização
     await users.postGroups(token, userObjects, `/${process.env.STUDENT_GROUP_ID}/members/$ref`)
