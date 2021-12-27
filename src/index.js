@@ -20,11 +20,15 @@ async function main() {
         console.log("Starting Students")
         const Students = await students.createMissingStudents(token)
         console.log(Students)
+        const resetStudents = await students.resetStudentsPasswords(token)
+        console.log(resetStudents)
     }
     if (process.env.FACULTY_START == 'true') {
         console.log("Starting Faculty")
         const Faculty = await faculties.createMissingFaculty(token)
         console.log(Faculty)
+        const resetFaculty = await faculties.createMissingFaculty(token)
+        console.log(resetFaculty)
     }
     console.log("END")
 

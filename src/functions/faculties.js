@@ -22,7 +22,7 @@ async function postStaffUser(token, data) {
         givenName: splittedName.name,
         surname: splittedName.surname,
         mailNickname: nickName,
-        jobTitle:data.jobtitle,
+        jobtitle:data.jobtitle,
         userPrincipalName: `${nickName}@${process.env.DOMAIN}`,
         usageLocation: 'BR',
         passwordProfile: {
@@ -93,6 +93,38 @@ async function createMissingFaculty(token) {
     return facultyPost
 }
 
+
+//Reseta senhas de estudantes
+async function resetFacultyPasswords(token) {
+    const facultyToReset = await StaffController.getFacultyToResetPassword()
+    const facultyReset = await Promise.all(facultyToReset.map(async (student) => {
+        const updateActual = await facultyResetPassword(token, student)
+        return updateActual
+    }))
+
+    return studentsReset
+}
+
+//Redefinição de Senha
+async function facultyResetPassword(token, data) {
+    const userData = await users.getUser(token, data.email)
+    console.log('Hello')
+    const newPass = {
+        passwordProfile: {
+          forceChangePasswordNextSignIn: true,
+          password: process.env.DEFAULT_PASSWORD
+        }
+      };
+    const studentReseted = await users.patchUsers(token, newPass, `/${userData.id}`)
+    const toUpdate = {
+        email: userData.userPrincipalName,
+        senha: process.env.DEFAULT_PASSWORD
+    }
+    console.log(studentReseted)
+    const studentOk = StaffController.updateFacultyDistribution(toUpdate)
+
+}
+
 module.exports = {
-    getFaculty, postStaffUser, createMissingFaculty
+    getFaculty, postStaffUser, createMissingFaculty, resetFacultyPasswords
 }

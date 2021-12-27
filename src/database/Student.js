@@ -16,9 +16,19 @@ async function updateStudentsEmail(data) {
     const aluno = await Aluno.findOneAndUpdate({matricula:data.matricula}, {email:data.email})
 }
 
+async function updateStudentsDistribution(data) {
+    const aluno = await Distribution.findOneAndUpdate({email:data.email}, {senha:data.senha, updated: Date.now(), reset_password: false})
+}
+
 async function pushStudentsToDistribution(data){
     const distributionAdd = await Distribution.create(data)
     return distributionAdd
+}
+
+
+async function getStudentsToResetPassword() {
+    const students = await Distribution.find({reset_password:true})
+    return students
 }
 
 module.exports = {
@@ -26,4 +36,6 @@ module.exports = {
     getStudentsNoEmail,
     updateStudentsEmail,
     pushStudentsToDistribution,
+    updateStudentsDistribution,
+    getStudentsToResetPassword
 }

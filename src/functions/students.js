@@ -20,7 +20,7 @@ async function postStudents(token, data) {
         givenName: splittedName.name,
         surname: splittedName.surname,
         mailNickname: data.matricula,
-        jobTitle:'Estudante',
+        jobtitle: 'Estudante',
         userPrincipalName: `${data.matricula}@${process.env.DOMAIN}`,
         usageLocation: 'BR',
         passwordProfile: {
@@ -29,21 +29,21 @@ async function postStudents(token, data) {
         }
     }
 
-    const students = await users.postUsers(token,studentData)
+    const students = await users.postUsers(token, studentData)
 
     //Atribuindo licencas
-    const licence = 
-        {
-            "addLicenses": [
-              {
+    const licence =
+    {
+        "addLicenses": [
+            {
                 "disabledPlans": [],
                 "skuId": process.env.STUDENT_SKUID
-              }
-            ],
-            "removeLicenses": []
+            }
+        ],
+        "removeLicenses": []
     }
-    await users.postUsers(token,licence, `/${students.userPrincipalName}/assignLicense`)
-    
+    await users.postUsers(token, licence, `/${students.userPrincipalName}/assignLicense`)
+
     //Atualizando banco de dados original
     const alunoToUpdate = {
         matricula: data.matricula,
@@ -54,14 +54,14 @@ async function postStudents(token, data) {
 
     //Obtendo objetos para adicionar usuários a grupos
     // const userObjects = {"@odata.id":students["@odata.id"]}
-    const userObjects = {"@odata.id":`https://graph.microsoft.com/v1.0/directoryObjects/${students.id}`}
+    const userObjects = { "@odata.id": `https://graph.microsoft.com/v1.0/directoryObjects/${students.id}` }
 
     //Adicionando a grupo de organização
     await users.postGroups(token, userObjects, `/${process.env.STUDENT_GROUP_ID}/members/$ref`)
     //ADICIONAR APENAS SE HOUVER SSO NA ORGANIZAÇÃO
     //Adicionando a grupo de SSO
     await users.postGroups(token, userObjects, `/${process.env.SSO_STUDENT_GROUP}/members/$ref`)
-    
+
 
     //Adicionando aluno na collection de distribuição
     const alunoToAdd = {
@@ -76,7 +76,7 @@ async function postStudents(token, data) {
     }
 
     await AlunosController.pushStudentsToDistribution(alunoToAdd)
-    
+
     return students
 }
 
@@ -97,6 +97,37 @@ async function createMissingStudents(token) {
     return studentsPost
 }
 
+//Reseta senhas de estudantes
+async function resetStudentsPasswords(token) {
+    const studentsToReset = await AlunosController.getStudentsToResetPassword()
+    const studentsReset = await Promise.all(studentsToReset.map(async (student) => {
+        const updateActual = await studentResetPassword(token, student)
+        return updateActual
+    }))
+
+    return studentsReset
+}
+
+//Redefinição de Senha
+async function studentResetPassword(token, data) {
+    const userData = await users.getUser(token, data.email)
+    console.log('Hello')
+    const newPass = {
+        passwordProfile: {
+          forceChangePasswordNextSignIn: true,
+          password: process.env.DEFAULT_PASSWORD
+        }
+      };
+    const studentReseted = await users.patchUsers(token, newPass, `/${userData.id}`)
+    const toUpdate = {
+        email: userData.userPrincipalName,
+        senha: process.env.DEFAULT_PASSWORD
+    }
+    console.log(studentReseted)
+    const studentOk = AlunosController.updateStudentsDistribution(toUpdate)
+
+}
+
 module.exports = {
-    getStudents, postStudents, createMissingStudents
+    getStudents, postStudents, createMissingStudents, resetStudentsPasswords
 }
