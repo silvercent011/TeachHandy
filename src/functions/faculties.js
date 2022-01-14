@@ -6,7 +6,7 @@ const shared = require('./shared')
 //Obtém todos os não estudantes do Microsoft Graph
 async function getFaculty(token) {
     const staff = await users.getUsers(token)
-    return await staff.filter((staff) => staff.jobTitle !== 'Estudante')
+    return await staff.filter((staff) => staff.jobtitle !== 'Estudante')
 }
 
 //Cria novos usuários
@@ -71,7 +71,7 @@ async function postStaffUser(token, data) {
         nome: data.nome,
         senha: process.env.DEFAULT_PASSWORD,
         email: staffData.userPrincipalName,
-        jobtitle: staffData.jobTitle,
+        jobtitle: staffData.jobtitle,
         created: Date.now(),
         updated: Date.now(),
     }
